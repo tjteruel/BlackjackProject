@@ -16,12 +16,12 @@ public class BlackjackApp {
 	// M E T H O D S
 	public static void main(String[] args) {
 		BlackjackApp app = new BlackjackApp();
+		System.out.println("\t\tWelcome to the Blackjack Table!");
 		app.intro();
 	}// E N D M A I N
 
 	// INTRO
 	private void intro() {
-		System.out.println("\t\tWelcome to the Blackjack Table!");
 		boolean menuLoop = true;
 		while (menuLoop) {
 			try {
@@ -30,13 +30,12 @@ public class BlackjackApp {
 				int userChoice = kb.nextInt();
 				switch (userChoice) {
 				case 1:
-//					dealer.getHand().clear();
-//					player.getHand().clear();
 					firstHand();
 					break;
 				case 2:
-					System.out.println("Maybe next time? Goodbye!");
+					System.out.println("Thanks for playing. Have a good night!");
 					menuLoop = false;
+					System.exit(0);
 					break;
 				default:
 					System.out.println("Please enter 1 or 2.");
@@ -52,9 +51,9 @@ public class BlackjackApp {
 	// DEALS FIRST HAND
 	private void firstHand() {
 		dealer.dealerShuffle();
-		System.out.println("Dealing cards...");
+		System.out.println("\nDealing cards...");
 		dealer.dealCard(player);
-		System.out.println("Your hand: " + player.getHand().toString());
+		System.out.println("Your first card is a: " + player.getHand().toString());
 		dealer.dealCard(dealer);
 		System.out.println("The dealer places his first card face down.");
 		dealer.dealCard(player);
@@ -83,12 +82,17 @@ public class BlackjackApp {
 					System.out.println("Your hand: " + player.getHand().toString());
 					System.out.println("Your total hand is " + player.getHand().getHandValue());
 					checkBust();
+					if (player.getHand().isBust()) {
+						anotherHand();
+					}
+					if (player.getHand().getHandValue() == 21) {
+						checkWin();
+					}
 					break;
 				case 2:
-					System.out.println("Your hand: " + player.getHand().toString());
+					System.out.println("\nYour hand: " + player.getHand().toString());
 					System.out.println("Your total hand is " + player.getHand().getHandValue());
 					dealerHits();
-					checkBust();
 					checkWin();
 					break;
 				case 3:
@@ -109,30 +113,33 @@ public class BlackjackApp {
 	private void checkBlackjack() {
 		if (player.getHand().isBlackjack()) {
 			System.out.println("Blackjack! You win!");
+			anotherHand();
 		}
 		if (dealer.getHand().isBlackjack()) {
 			dealer.printDealerCards();
 			System.out.println("Blackjack! The Dealer won. ");
-		}
-		if (player.getHand().getHandValue() == dealer.getHand().getHandValue()) {
-			System.out.println("The Dealer shows his hand. ");
-			dealer.printDealerCards();
-			System.out.println("Push. No one wins. ");
+			anotherHand();
 		}
 	}
 
 	// CHECKS FOR WIN
 	private void checkWin() {
 		if (player.getHand().getHandValue() > dealer.getHand().getHandValue() && !player.getHand().isBust()) {
-			System.out.println("The Dealer shows his hand with a total of " + dealer.getHand().getHandValue());
+			System.out.println("\nThe Dealer shows his hand with a total of " + dealer.getHand().getHandValue());
 			dealer.printDealerCards();
 			System.out.println("You won!");
 		}
 		if (player.getHand().getHandValue() < dealer.getHand().getHandValue() && !dealer.getHand().isBust()) {
-			System.out.println("The Dealer shows his hand with a total of " + dealer.getHand().getHandValue());
+			System.out.println("\nThe Dealer shows his hand with a total of " + dealer.getHand().getHandValue());
 			dealer.printDealerCards();
 			System.out.println("The Dealer won. Better luck next time!");
 		}
+		if (player.getHand().getHandValue() == dealer.getHand().getHandValue()) {
+			System.out.println("\nThe Dealer shows his hand. ");
+			dealer.printDealerCards();
+			System.out.println("Push. No one wins. ");
+		}
+		anotherHand();
 	}
 
 	// CHECKS FOR BUST
@@ -148,18 +155,26 @@ public class BlackjackApp {
 
 	// DEALER HITS (HITS UNDER 17)
 	public void dealerHits() {
-		while (!dealer.getHand().isBust()) {
-			if (dealer.getHand().getHandValue() < 17) {
+		if (dealer.getHand().getHandValue() < 17) {
+			while (!dealer.getHand().isBust()) {
+				System.out.println("\nThe Dealer hits. ");
 				dealer.dealCard(dealer);
-				System.out.println("The Dealer hits. ");
-				// dealer.printDealerCards();
+				if (dealer.getHand().isBust() || dealer.getHand().getHandValue() >= 17) {					
 				checkBust();
+				checkWin();
 				break;
-			} else {
-				System.out.println("The Dealer stays. ");
-				// dealer.printDealerCards();
-				break;
+				}
 			}
+		} else {
+			System.out.println("\nThe Dealer stays. ");
 		}
+	}
+
+	// DEAL ANOTHER HAND
+	public void anotherHand() {
+		System.out.println("");
+		dealer.getHand().clear();
+		player.getHand().clear();
+		intro();
 	}
 }
