@@ -6,7 +6,7 @@ import com.skilldistillery.blackjack.cards.Card;
 
 public abstract class Hand {
 	
-	private List<Card> cards;
+	protected List<Card> cards;
 	
 	public Hand() {
 		cards = new ArrayList<Card>();
@@ -21,15 +21,19 @@ public abstract class Hand {
 	}
 	
 	public abstract int getHandValue();
+	
+	public List<Card> getHand(){
+		List<Card> cardsDefensive = new ArrayList<>();
+		cardsDefensive.addAll(cards);
+		return cardsDefensive;
+	}
 
 	
 	//toString
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Hand [cards=");
-		builder.append(cards);
-		builder.append("]");
+		StringBuilder builder = new StringBuilder();		
+		builder.append(cards);		
 		return builder.toString();
 	}
 	

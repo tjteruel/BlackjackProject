@@ -4,8 +4,6 @@ public class Card {
 	private Rank rank;
 	private Suit suit;
 	
-	
-	
 	//CONSTRUCTOR
 	public Card(Rank rank, Suit suit) {
 		super();
